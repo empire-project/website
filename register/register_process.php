@@ -32,15 +32,24 @@ if ($email && $password && $rpassword) {
                 
                 $query   = mysql_query("INSERT INTO users VALUES ('','$email','$password','','$hash','0') ");
                 $to      = $email;
+                $from = 'noreply@empirecoin.co';
                 $subject = "Activate your account!";
-                $headers = "From: noreply@empirecoin.co";
+                
+                $headers = "From: " . strip_tags($from) . "\r\n";
+  				$headers .= "Reply-To: ". strip_tags($from) . "\r\n";
+  				$headers .= "CC: info@phpgang.com\r\n";
+  				$headers .= "MIME-Version: 1.0\r\n";
+  				$headers .= "Content-Type: text/html; charset=ISO-8859-1\r\n";
+                
                 $body    = "
-Hello $email,\n\n
-You need to activate your account with the link below:\n
-http://libertypay.net/email_confirmation.php?id=$lastid&hash=$hash
-\n
-Thanks!
-";
+                <html>
+                <body>
+                <p>Hello,<br>
+                please confirm your account with the link below:<br>
+                <a href='http://empirecoin.co/login/activate?email=$to&hash=$hash'>http://empirecoin.co/login/activate?email=$to&hash=$hash</a>
+				Thank you!
+				</p>
+				";
                 //Send email
                 mail($to, $subject, $body, $headers);
                 
