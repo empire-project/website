@@ -1,5 +1,6 @@
 <?php
 session_start();
+
 $email = $_POST['email_register'];
 $password = $_POST['password_register'];
 $rpassword = $_POST['rpassword_register'];
@@ -19,16 +20,31 @@ if ($email && $password && $rpassword){
 
 		  	if($count == 0){
 
-			  require("../connect_db.php");
-			  require("../functions.php");
+			  	require("../connect_db.php");
+			  	require("../functions.php");
 
-			  $email = mysql_fix_string($email);
-			  $password = mysql_fix_string($password);
-			  $rpassword = mysql_fix_string($rpassword);
+			  	$email = mysql_fix_string($email);
+			  	$password = mysql_fix_string($password);
+			  	$rpassword = mysql_fix_string($rpassword);
 
-			  $query = mysql_query("INSERT INTO users VALUES ('','$email','$password','') ");
+			 	 $hash = md5(uniqid(mt_rand(), true));
 
-			  echo "<span id='success'>We have sent you an email, please confirm your account to log in </span>";
+			  	$query = mysql_query("INSERT INTO users VALUES ('','$email','$password','','0') ");
+
+			  	$subject = 'Please confirm your account';
+				$message = "
+					<p>Hello,
+					Please confirm your account with the link below:\n				
+					http://www.empirecoin.co/login/activate?email=$email&hash=$hash
+					\n
+					Thank you!
+					</p>
+				";
+
+				mail($email, $subject, $message);
+				
+
+			  	echo "<span id='success'>We have sent you an email, please confirm your account to log in </span>";
 
 
 			} else {
